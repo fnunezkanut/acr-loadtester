@@ -1,0 +1,27 @@
+plugins {
+    id 'idea'
+    id 'scala'
+    id 'io.gatling.gradle' version '3.4.1'
+}
+
+repositories {
+    mavenCentral()
+    jcenter()
+}
+
+wrapper {
+    distributionType = Wrapper.DistributionType.ALL
+}
+
+gatling {
+    jvmArgs = ['-server', '-Xms512M', '-Xmx512M']
+    if (project.hasProperty("env")) { //so we can use .properties config files when developing locally, see propfiles README.md
+        file("$rootDir/propfiles/${project.findProperty("env")}.properties").withReader {
+            Properties props = new Properties()
+            props.load(it)
+            systemProperties += props
+        }
+    }
+    includeMainOutput = false
+    includeTestOutput = false
+}
